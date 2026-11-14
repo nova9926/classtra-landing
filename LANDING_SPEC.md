@@ -10,9 +10,9 @@ You are a senior front-end engineer and UI designer with Apple-level taste. Buil
 ## Context
 - **Product:** Classtra, a management app for private training/support centers in Algeria (soutien scolaire, BAC prep, formation). Made by Nuestra-Tech.
 - **Audience:** center owners, mostly 40+ years old, who don't trust software much and value in-person help. The page must feel **trustworthy and premium**, like an Apple product page.
-- **Language:** French (fr-DZ). Keep all copy in French exactly as written below.
+- **Languages:** French (default), English and Arabic (read right to left). The visitor chooses with the FR · EN · عربي switch in the navbar; the choice is remembered. All texts live in `src/i18n/fr.ts`, `en.ts` and `ar.ts`, and those files are the source of truth for copy. Register: formal ("nous" / "vous" in French, formal English, Modern Standard Arabic). The French quoted in the sections below is the earlier draft and is kept only as a guide to what each section says.
 - **Stack (new project, already created with Vite React + TypeScript):** React + Vite + TypeScript, Tailwind CSS v4, shadcn/ui, Motion (framer-motion), Magic UI. One page, no router needed (anchor links only).
-- **The Classtra app is a different project.** "Se connecter" is just an external link to the app's login URL, stored in `siteConfig.ts` as `APP_LOGIN_URL` (placeholder for now).
+- **The Classtra app is a different project.** This site only has the front end of the account page (sign in and create an account, see section 11). The forms are not connected yet: connecting them to the Classtra API is a later step.
 
 ## Step 0: project setup (do this first, then show me the result)
 The folder already contains a fresh Vite + React + TypeScript project. Set it up:
@@ -85,6 +85,8 @@ The whole page is built from frosted glass panels floating over the board green 
 - **Headings, prices, step numbers, logo wordmark, FAQ questions:** **Stardos Stencil** 700 (Google Fonts), letter-spacing −0.01em, line-height ~1.05.
   `<link href="https://fonts.googleapis.com/css2?family=Stardos+Stencil:wght@400;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">`
 - **Everything else** (body, buttons, labels, inputs, FAQ answers): **Inter**, 18px minimum, line-height 1.6. Never use Stardos Stencil for small text.
+- **The chalk slogan** ("ELEVATE YOUR SCHOOL With CLASSTRA", above the Problems section, in English in every language): **Playfair Display** Italic 700. Used nowhere else.
+- **Arabic:** see "Right-to-left (Arabic)".
 - Sizes: H1 `clamp(46px, 6vw, 80px)` · H2 `clamp(34px, 4.4vw, 56px)` · H3 24–38px · eyebrows 14px uppercase, tracking .06em.
 
 ## Icons: Google Material Symbols Rounded, filled
@@ -98,10 +100,10 @@ The whole page is built from frosted glass panels floating over the board green 
 ### 1. Navbar: minimal, Apple-style
 - A slim floating dark-glass pill, centered, max-width ~760px, sticky. About 56px tall.
 - Left: small yellow logo chip (`school` icon) + "Classtra" (Stardos 21px).
-- Right, **only 3 items**: "Fonctionnalités" (text link) · "Tarifs" (text link) · "Se connecter" (simple solid chalk pill with ink text, links to `APP_LOGIN_URL`).
-- No other links or buttons in the navbar. The "Demander une démo" CTA lives in the hero and the contact section only.
+- Centre: "Fonctionnalités" and "Tarifs" (text links). Right: the language switch (FR · EN · عربي), the light/dark switch, "Se connecter" (glass outline pill, opens the account page on its sign-in tab) and "Créer un compte" (solid chalk pill with ink text, opens it on its sign-up tab). The pill is up to ~1080px wide.
+- Solid and outline: the main action of the bar ("Créer un compte") is the solid chalk pill, the secondary one ("Se connecter") is glass. Yellow is not used in the navbar. The demonstration CTA lives in the hero and the contact section only.
 - Links: 15px Inter 500, `muted-on-board`, pill-shaped hover background `rgba(244,241,234,.08)`.
-- Mobile: logo + "Se connecter" + a `menu` icon button that opens a glass Sheet with the 2 links.
+- Below 1024px: logo + "Se connecter" + (from 640px) "Créer un compte" + a menu button whose three bars fold into a cross. It opens an extra-glassy panel with the 2 links, "Créer un compte" (on phones), the language switch and the light/dark switch.
 
 ### 2. Hero (board): centered, Apple-style
 - Everything centered, max-width ~900px for the text:
@@ -109,7 +111,7 @@ The whole page is built from frosted glass panels floating over the board green 
   - H1 (centered, up to 2 lines): "Votre centre de formation, **enfin sous contrôle.**" ← "enfin sous contrôle." in yellow, with the **chalk-writing intro** (see Motion)
   - Sub: "Inscriptions, présences, paiements et attestations au même endroit. Pour le directeur, le secrétariat et les formateurs."
   - Buttons: "Demander une démo →" (yellow) · "Voir les fonctions" (glass, `play_circle`, scrolls to `#features`)
-  - Trust chips (glass): Installation sur place · Formation de votre équipe · Support en darija
+  - Trust chips (glass): Installation sur place · Formation de votre équipe · Support gratuit toute l'année
 - Below the text: the **floating glass cards** composition, full content width (`HeroCards` component). These are 5–6 dark-glass cards at different depths, slightly overlapping like a layered scene:
   - Back layer: "Tableau de bord" KPI card (Élèves actifs 248 · Présence 94% · Payé ce mois 74% in yellow) + a small 6-bar chart
   - Middle layer: attendance card "Présences · BAC Maths" (Dim ✓ Lun ✓ Mar ✕ Mer ✓ Jeu empty) and payments card (Amina B. Payé · Yacine K. 2ᵉ tranche · Sara M. En retard)
@@ -152,7 +154,7 @@ Eyebrow "Comment ça marche" · H2 "On vient chez vous. On installe. On forme vo
 3 light-glass step cards with big board-green Stardos numbers:
 1. Vous faites la demande: "Remplissez le formulaire. On vous appelle dans la journée."
 2. On installe sur place: "On importe vos élèves et on forme votre secrétariat dans votre centre."
-3. Vous gérez sereinement: "Et si besoin, notre équipe répond au téléphone, en darija."
+3. Vous gérez sereinement: "Et si besoin, notre équipe vous répond du matin au soir, gratuitement, toute l'année."
 
 **Chalk path:** a hand-drawn, slightly wavy yellow chalk line (SVG, rough texture) connects card 1 → 2 → 3. It **draws itself as the user scrolls** (stroke-dashoffset linked to scroll progress). Each card lights up (its border turns yellow) when the line reaches it. Desktop: horizontal path. Mobile: vertical path on the left with the cards stacked.
 
@@ -162,17 +164,19 @@ Two columns (stacked on mobile):
 - **Left: one big pricing card** (board-green with the chalk grid and a 3px yellow ring):
   - Top: a glass **segmented switch**: Mensuel · 6 mois · Annuel. **Default: Annuel.**
   - The price animates (number rolls/crossfades, 0.4s) when switching:
-    - Mensuel: **10 000 DA** / mois · "Pour commencer sans engagement."
-    - 6 mois: **60 000 DA** · "Une année scolaire en un seul paiement."
-    - Annuel: **89 900 DA** / an · badge "Le plus avantageux" · "Vous économisez 30 100 DA par rapport au mensuel."
+    - Mensuel: **7 500 DA** / mois · "Pour commencer sans engagement."
+    - 6 mois: **40 000 DA** · "Une année scolaire en un seul paiement."
+    - Annuel: **75 000 DA** / an · badge "Le plus avantageux" · "Vous économisez 15 000 DA par rapport au mensuel."
   - Yellow button: "Choisir [plan]" → scrolls to `#contact` and preselects the plan in the form.
 - **Right: "Inclus dans chaque formule" checklist** (light glass), each line with a yellow `check_circle`:
+  - Jusqu'à 600 élèves
   - Installation sur place
   - Import de vos élèves
   - Formation de votre équipe
-  - Support en darija
+  - Support gratuit toute l'année
   - Mises à jour incluses
   - Sauvegardes automatiques
+- At the bottom of the checklist card, one line about the only extra charge: "Plus de 600 élèves ? 5 500 DA par tranche de 500 élèves en plus." (every plan includes up to 600 students).
 - Under both: a centered line with a `verified` icon: "Installation, import de vos élèves et formation sur place inclus. Aucun frais caché." **There is NO setup fee.**
 
 ### 8. FAQ (`#faq`, chalk): glass accordion
@@ -186,7 +190,7 @@ One item open at a time, smooth height animation (0.3s), and a `expand_more` ico
 A big dark-glass block:
 - **Left:** H2 "Prêt à reprendre le **contrôle** de votre centre ?" ("contrôle" in yellow) + "Laissez vos coordonnées. On vous appelle et on passe vous faire une démonstration."
 - **Right:** a light-glass form:
-  - Fields: Nom du centre, Votre nom, Téléphone, Wilaya (select, 58 wilayas), plus a hidden "Formule" field filled by the pricing switch.
+  - Fields: Nom du centre, Votre nom, Téléphone, Wilaya (select, 58 wilayas), Formule (visible select: Mensuel / 6 mois / Annuel with prices, preselected by the pricing switch and kept in sync with it), Mode de paiement (two choices: "Espèces · En main propre" and "Paiement électronique · Bientôt disponible"; electronic payment is not integrated yet).
   - Board-green button "Être rappelé" with the `call` icon.
   - Validation: react-hook-form + zod. Phone has 10 digits starting with 05, 06 or 07.
   - After submit, show a success state inside the card ("Merci ! On vous appelle très vite.").
@@ -201,6 +205,35 @@ A thin chalk divider, then 4 columns (2×2 on mobile), small Inter text (14px, `
 - **Légal:** Mentions légales · Politique de confidentialité. These link to `#` for now; add a `TODO` and list them in your summary. Don't write legal text.
 
 Bottom row: "Classtra" (Stardos) + "Un produit Nuestra-Tech · Conçu en Algérie" on the left, "© 2026 Nuestra-Tech" on the right.
+
+### 11. Account page (board): sign in and create an account
+Opened by the two navbar buttons (addresses `#/connexion` and `#/inscription`). One page, two tabs, using the same sliding-thumb control as the Roles tabs, so the visitor can switch from one form to the other at any time. The form sits on a paper card (light glass by day, dark glass by night), like the contact form. A "← Découvrir Classtra" link goes back to the landing page. On this page the navbar only shows the logo, the language switch and the light/dark switch.
+- **Connexion:** Adresse e-mail, Mot de passe (with a show/hide eye), "Se connecter", "Mot de passe oublié ?".
+- **Créer votre compte:** *Votre établissement*: Nom de l'établissement, Type d'établissement (Centre de formation, Centre de soutien scolaire, École privée, École de langues, Autre), Wilaya (58). *Votre compte de directeur*: Nom complet, Adresse e-mail, Téléphone mobile (10 digits starting with 05, 06 or 07), Mot de passe (10 characters minimum, with 1 capital letter and 1 digit). Then the terms line (conditions générales de vente, politique de confidentialité) and "Créer mon compte".
+- Front end only for now: the forms validate, then show a short notice. Each has a `TODO` where the Classtra API call goes. **A password is never logged, stored in the browser or kept after the call.**
+
+## Dark mode: "the blackboard at night"
+A light/dark switch sits in the navbar (a moon by day, a sun by night); the choice is remembered. Light mode is the design described in this document. Dark mode follows the same rules, with a deeper palette:
+
+| Token | Light | Dark |
+|---|---|---|
+| `board` | `#1F3D34` | `#132C26` |
+| `paper` (the chalk sections and form cards) | `#F4F1EA` | `#0E201B` |
+| text on paper | `#1C1C1A` | `#F4F1EA` |
+| secondary text on paper | `#4A5650` | `#C4D0C8` |
+| `paper-strong` (eyebrows, step numbers, icons on paper) | `#1F3D34` | `#9CCBB6` (mint chalk) |
+| main button on paper | board with chalk text | chalk with ink text |
+
+- Yellow `#F2B705` stays the only loud colour, always with ink text. Chalk stays the text colour on board.
+- The paper sections keep their own tone (deeper than the board), so the page still alternates between two tones. By night they use dark glass and the chalk grid instead of the paper grain.
+- Changing mode spreads the new colours out in a circle from the switch (View Transitions API). Without support, or with reduced motion, the mode simply changes.
+
+## Right-to-left (Arabic)
+- `<html dir="rtl">`: the layout mirrors (navbar, grids, the step order, the chalk path, the form). Arrows that mean "next" or "back" are mirrored too.
+- Fonts: **Reem Kufi** for headings and **IBM Plex Sans Arabic** for text. No letter-spacing on Arabic, and more line height. The logo text "Classtra." keeps Stardos Stencil in every language.
+- Chalk writing draws Arabic word by word, because Arabic letters join.
+- Numbers such as "2 500" use a narrow no-break space so they are not reordered.
+- The Arabic texts were written by a non-native author: **have a native speaker review `src/i18n/ar.ts` before going live.**
 
 ## Background depth: layered parallax
 Every board and chalk section has **3 depth layers**:

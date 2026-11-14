@@ -22,3 +22,8 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Created by the Claude app
+.claude/scheduled_tasks.lock
+.vercel
+.vercel

@@ -1,130 +1,444 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
-@import "@fontsource-variable/geist";
 
-@custom-variant dark (&:is(.dark *));
+/* Dark mode is chosen by the visitor (src/lib/prefs.ts sets data-theme on <html>). */
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
 
+/* ---------- Tableau tokens (LANDING_SPEC.md "Palette") ---------- */
+@theme {
+  --color-board: #1f3d34;
+  --color-board-solid: #2a4a40; /* solid fallback for dark glass */
+  --color-chalk: #f4f1ea;
+  --color-ink: #1c1c1a;
+  --color-accent: #f2b705;
+  --color-muted-on-board: #d4ddd6;
+  --color-muted-on-chalk: #4a5650;
+  --color-soft-on-board: #afc2b7; /* Roles heading, second sentence */
+
+  /*
+   * "Paper": the light sections and the form cards. Light mode uses the chalk values below;
+   * dark mode replaces them further down (html[data-theme="dark"]).
+   */
+  --color-paper: #f4f1ea;
+  --color-on-paper: #1c1c1a;
+  --color-muted-on-paper: #4a5650;
+  --color-paper-strong: #1f3d34; /* eyebrows, step numbers, icons */
+  --color-paper-action: #1f3d34; /* solid buttons and selected choices on paper */
+  --color-paper-action-text: #f4f1ea;
+  --color-field: rgb(255 255 255 / 0.75); /* text fields */
+
+  /* status pills, always with ink text */
+  --color-paid: #cdebd9;
+  --color-partial: #fbe7a6;
+  --color-late: #f6cfc6;
+
+  /* blurred light orbs behind the glass */
+  --color-orb-green: #3f7a66;
+  --color-orb-mint: #7fb39e;
+
+  --font-sans: "Inter", system-ui, sans-serif;
+  --font-heading: "Stardos Stencil", Georgia, serif;
+  --font-flourish: "Playfair Display", Georgia, serif; /* italic, for the chalk slogan only */
+  --font-brand: "Stardos Stencil", Georgia, serif; /* the logo text, the same in every language */
+
+  --text-h1: clamp(2.875rem, 6vw, 5rem); /* 46 → 80px */
+  --text-h1--line-height: 1.05;
+  --text-h1--letter-spacing: -0.01em;
+  --text-h2: clamp(2.125rem, 4.4vw, 3.5rem); /* 34 → 56px */
+  --text-h2--line-height: 1.05;
+  --text-h2--letter-spacing: -0.01em;
+
+  --radius-chip: 1rem; /* 16px icon chips */
+  --radius-card: 1.75rem; /* 28px cards */
+  --radius-panel: 2.5rem; /* 40px big panels */
+
+  --ease-calm: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* ---------- shadcn/ui semantic variables, mapped onto the Tableau tokens ---------- */
 @theme inline {
-    --font-heading: var(--font-sans);
-    --font-sans: 'Geist Variable', sans-serif;
-    --color-sidebar-ring: var(--sidebar-ring);
-    --color-sidebar-border: var(--sidebar-border);
-    --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-    --color-sidebar-accent: var(--sidebar-accent);
-    --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-    --color-sidebar-primary: var(--sidebar-primary);
-    --color-sidebar-foreground: var(--sidebar-foreground);
-    --color-sidebar: var(--sidebar);
-    --color-chart-5: var(--chart-5);
-    --color-chart-4: var(--chart-4);
-    --color-chart-3: var(--chart-3);
-    --color-chart-2: var(--chart-2);
-    --color-chart-1: var(--chart-1);
-    --color-ring: var(--ring);
-    --color-input: var(--input);
-    --color-border: var(--border);
-    --color-destructive: var(--destructive);
-    --color-accent-foreground: var(--accent-foreground);
-    --color-accent: var(--accent);
-    --color-muted-foreground: var(--muted-foreground);
-    --color-muted: var(--muted);
-    --color-secondary-foreground: var(--secondary-foreground);
-    --color-secondary: var(--secondary);
-    --color-primary-foreground: var(--primary-foreground);
-    --color-primary: var(--primary);
-    --color-popover-foreground: var(--popover-foreground);
-    --color-popover: var(--popover);
-    --color-card-foreground: var(--card-foreground);
-    --color-card: var(--card);
-    --color-foreground: var(--foreground);
-    --color-background: var(--background);
-    --radius-sm: calc(var(--radius) * 0.6);
-    --radius-md: calc(var(--radius) * 0.8);
-    --radius-lg: var(--radius);
-    --radius-xl: calc(var(--radius) * 1.4);
-    --radius-2xl: calc(var(--radius) * 1.8);
-    --radius-3xl: calc(var(--radius) * 2.2);
-    --radius-4xl: calc(var(--radius) * 2.6);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
 }
 
 :root {
-    --background: oklch(1 0 0);
-    --foreground: oklch(0.145 0 0);
-    --card: oklch(1 0 0);
-    --card-foreground: oklch(0.145 0 0);
-    --popover: oklch(1 0 0);
-    --popover-foreground: oklch(0.145 0 0);
-    --primary: oklch(0.205 0 0);
-    --primary-foreground: oklch(0.985 0 0);
-    --secondary: oklch(0.97 0 0);
-    --secondary-foreground: oklch(0.205 0 0);
-    --muted: oklch(0.97 0 0);
-    --muted-foreground: oklch(0.556 0 0);
-    --accent: oklch(0.97 0 0);
-    --accent-foreground: oklch(0.205 0 0);
-    --destructive: oklch(0.577 0.245 27.325);
-    --border: oklch(0.922 0 0);
-    --input: oklch(0.922 0 0);
-    --ring: oklch(0.708 0 0);
-    --chart-1: oklch(0.87 0 0);
-    --chart-2: oklch(0.556 0 0);
-    --chart-3: oklch(0.439 0 0);
-    --chart-4: oklch(0.371 0 0);
-    --chart-5: oklch(0.269 0 0);
-    --radius: 0.625rem;
-    --sidebar: oklch(0.985 0 0);
-    --sidebar-foreground: oklch(0.145 0 0);
-    --sidebar-primary: oklch(0.205 0 0);
-    --sidebar-primary-foreground: oklch(0.985 0 0);
-    --sidebar-accent: oklch(0.97 0 0);
-    --sidebar-accent-foreground: oklch(0.205 0 0);
-    --sidebar-border: oklch(0.922 0 0);
-    --sidebar-ring: oklch(0.708 0 0);
+  /* shadcn parts sit on chalk / light glass by default (form, FAQ) */
+  --background: var(--color-chalk);
+  --foreground: var(--color-ink);
+  --card: var(--color-chalk);
+  --card-foreground: var(--color-ink);
+  --popover: var(--color-chalk);
+  --popover-foreground: var(--color-ink);
+  --primary: var(--color-board);
+  --primary-foreground: var(--color-chalk);
+  --secondary: color-mix(in srgb, var(--color-ink) 6%, var(--color-chalk));
+  --secondary-foreground: var(--color-ink);
+  --muted: color-mix(in srgb, var(--color-ink) 6%, var(--color-chalk));
+  --muted-foreground: var(--color-muted-on-chalk);
+  --accent-foreground: var(--color-ink);
+  --destructive: oklch(0.5 0.19 27); /* form errors only */
+  --border: color-mix(in srgb, var(--color-ink) 14%, transparent);
+  --input: color-mix(in srgb, var(--color-ink) 18%, transparent);
+  --ring: var(--color-accent);
+  --radius: 0.625rem;
+
+  /* glass: one place to tune blur and outer shadow */
+  --glass-blur: 24px;
+  --glass-shadow-dark: 0 24px 60px rgb(0 0 0 / 0.28);
+  --glass-shadow-light: 0 20px 50px rgb(31 61 52 / 0.12);
+  --glass-light-bg: rgb(255 255 255 / 0.55);
+  --glass-light-bg-strong: rgb(255 255 255 / 0.85); /* form cards: must stay readable on dark glass */
+  --glass-light-border: rgb(255 255 255 / 0.85);
+  --glass-light-highlight: rgb(255 255 255 / 0.95);
+  --glass-light-solid: rgb(255 255 255 / 0.9); /* fallback when blur is unavailable */
 }
 
-.dark {
-    --background: oklch(0.145 0 0);
-    --foreground: oklch(0.985 0 0);
-    --card: oklch(0.205 0 0);
-    --card-foreground: oklch(0.985 0 0);
-    --popover: oklch(0.205 0 0);
-    --popover-foreground: oklch(0.985 0 0);
-    --primary: oklch(0.922 0 0);
-    --primary-foreground: oklch(0.205 0 0);
-    --secondary: oklch(0.269 0 0);
-    --secondary-foreground: oklch(0.985 0 0);
-    --muted: oklch(0.269 0 0);
-    --muted-foreground: oklch(0.708 0 0);
-    --accent: oklch(0.269 0 0);
-    --accent-foreground: oklch(0.985 0 0);
-    --destructive: oklch(0.704 0.191 22.216);
-    --border: oklch(1 0 0 / 10%);
-    --input: oklch(1 0 0 / 15%);
-    --ring: oklch(0.556 0 0);
-    --chart-1: oklch(0.87 0 0);
-    --chart-2: oklch(0.556 0 0);
-    --chart-3: oklch(0.439 0 0);
-    --chart-4: oklch(0.371 0 0);
-    --chart-5: oklch(0.269 0 0);
-    --sidebar: oklch(0.205 0 0);
-    --sidebar-foreground: oklch(0.985 0 0);
-    --sidebar-primary: oklch(0.488 0.243 264.376);
-    --sidebar-primary-foreground: oklch(0.985 0 0);
-    --sidebar-accent: oklch(0.269 0 0);
-    --sidebar-accent-foreground: oklch(0.985 0 0);
-    --sidebar-border: oklch(1 0 0 / 10%);
-    --sidebar-ring: oklch(0.556 0 0);
+/* Phones: lighter blur, no outer shadow (LANDING_SPEC.md "Mobile") */
+@media (max-width: 767.98px) {
+  :root {
+    --glass-blur: 12px;
+    --glass-shadow-dark: 0 0 #0000;
+    --glass-shadow-light: 0 0 #0000;
+  }
+}
+
+/*
+ * ---------- Dark mode: "the blackboard at night" ----------
+ * Same rules as the light version: the board stays green (deeper), yellow is still the only
+ * loud colour, chalk is still the text. The light "paper" sections become an even deeper
+ * green with dark glass, so the page keeps its two alternating tones.
+ */
+html[data-theme="dark"] {
+  color-scheme: dark;
+  --color-board: #132c26;
+  --color-board-solid: #1d3c34;
+  --color-paper: #0e201b;
+  --color-on-paper: #f4f1ea;
+  --color-muted-on-paper: #c4d0c8;
+  --color-paper-strong: #9ccbb6; /* mint chalk */
+  --color-paper-action: #f4f1ea;
+  --color-paper-action-text: #1c1c1a;
+  --color-field: rgb(244 241 234 / 0.07);
+  --destructive: oklch(0.78 0.13 25);
+  --glass-light-bg: rgb(244 241 234 / 0.07);
+  --glass-light-bg-strong: rgb(244 241 234 / 0.09);
+  --glass-light-border: rgb(244 241 234 / 0.16);
+  --glass-light-highlight: rgb(255 255 255 / 0.18);
+  --glass-light-solid: #1d3c34;
+}
+
+@media (min-width: 768px) {
+  html[data-theme="dark"] {
+    --glass-shadow-light: 0 24px 60px rgb(0 0 0 / 0.35);
+  }
+}
+
+/*
+ * ---------- Arabic ----------
+ * Its own heading and text faces, more line height, and no letter-spacing
+ * (spacing would break the joins between Arabic letters).
+ */
+html[lang="ar"] {
+  --font-sans: "IBM Plex Sans Arabic", "Inter", system-ui, sans-serif;
+  --font-heading: "Reem Kufi", "IBM Plex Sans Arabic", sans-serif;
+  --text-h1--line-height: 1.3;
+  --text-h1--letter-spacing: 0;
+  --text-h2--line-height: 1.35;
+  --text-h2--letter-spacing: 0;
+}
+
+/*
+ * ---------- Changing mode ----------
+ * The new mode spreads out in a circle from the button (see toggleTheme in src/lib/prefs.ts).
+ */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+::view-transition-new(root) {
+  animation: theme-reveal 0.7s var(--ease-calm);
+}
+
+@keyframes theme-reveal {
+  from {
+    clip-path: circle(0 at var(--reveal-x, 50%) var(--reveal-y, 0));
+  }
+  to {
+    clip-path: circle(150vmax at var(--reveal-x, 50%) var(--reveal-y, 0));
+  }
 }
 
 @layer base {
   * {
-    @apply border-border outline-ring/50;
-    }
-  body {
-    @apply bg-background text-foreground;
-    }
+    @apply border-border;
+  }
+
   html {
     @apply font-sans;
+    scroll-padding-top: 6rem; /* anchor targets clear the floating navbar */
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    html {
+      scroll-behavior: smooth;
     }
+  }
+
+  body {
+    @apply bg-board text-chalk antialiased;
+    font-size: 1.125rem; /* 18px minimum for body copy */
+    line-height: 1.6;
+  }
+
+  /* Focus ring: yellow on board; on paper, board-green in light mode and mint in dark mode. */
+  :focus-visible {
+    outline: 3px solid var(--focus-ring, var(--color-accent));
+    outline-offset: 3px;
+  }
+
+  .on-board {
+    --focus-ring: var(--color-accent);
+  }
+
+  .on-chalk {
+    --focus-ring: var(--color-paper-strong);
+  }
+
+  html[lang="ar"] .heading {
+    letter-spacing: 0;
+    line-height: 1.35;
+  }
+
+  html[lang="ar"] .eyebrow {
+    letter-spacing: 0;
+    font-size: 1rem;
+  }
+}
+
+@layer components {
+  /* Stardos Stencil: headings, prices, step numbers, wordmark, FAQ questions. Never small text. */
+  .heading {
+    font-family: var(--font-heading);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    line-height: 1.05;
+  }
+
+  .eyebrow {
+    font-size: 0.875rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  /* Faint chalk grid for board sections: 1px lines every 48px */
+  .chalk-grid {
+    background-image:
+      linear-gradient(rgb(244 241 234 / 0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgb(244 241 234 / 0.04) 1px, transparent 1px);
+    background-size: 48px 48px;
+  }
+
+  /* Subtle paper grain for chalk sections: a 200px noise tile */
+  .paper-grain {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.11 0 0 0 0 0.11 0 0 0 0 0.1 0 0 0 0.5 0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size: 200px 200px;
+    opacity: 0.08;
+  }
+
+  /* Dark glass, on board */
+  .glass-dark {
+    background: rgb(244 241 234 / 0.08);
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(170%);
+    backdrop-filter: blur(var(--glass-blur)) saturate(170%);
+    border: 1px solid rgb(244 241 234 / 0.18);
+    box-shadow:
+      inset 0 1px 0 rgb(255 255 255 / 0.22),
+      var(--glass-shadow-dark);
+  }
+
+  /* "Paper" glass, on the light sections: light glass by day, dark glass by night */
+  .glass-light {
+    background: var(--glass-light-bg);
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(170%);
+    backdrop-filter: blur(var(--glass-blur)) saturate(170%);
+    border: 1px solid var(--glass-light-border);
+    box-shadow:
+      inset 0 1px 0 var(--glass-light-highlight),
+      var(--glass-shadow-light);
+  }
+
+  /* More opaque, for form cards */
+  .glass-light-strong {
+    background: var(--glass-light-bg-strong);
+  }
+
+  /* Solid fallbacks: no blur support, or the user asked for less transparency / more contrast */
+  @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+    .glass-dark {
+      background: var(--color-board-solid);
+    }
+    .glass-light {
+      background: var(--glass-light-solid);
+    }
+  }
+
+  @media (prefers-reduced-transparency: reduce), (prefers-contrast: more) {
+    .glass-dark {
+      background: var(--color-board-solid);
+      -webkit-backdrop-filter: none;
+      backdrop-filter: none;
+    }
+    .glass-light {
+      background: var(--glass-light-solid);
+      -webkit-backdrop-filter: none;
+      backdrop-filter: none;
+    }
+  }
+
+  @media (prefers-contrast: more) {
+    .glass-dark {
+      border-color: var(--color-chalk);
+    }
+    .glass-light {
+      border-color: var(--color-ink);
+    }
+  }
+
+  /*
+   * Dark glass that floats over the whole page (navbar, mobile menu).
+   * Same look as .glass-dark on board, plus a board tint so chalk text
+   * stays readable when it passes over the light chalk sections.
+   */
+  .glass-floating {
+    background:
+      linear-gradient(rgb(244 241 234 / 0.08), rgb(244 241 234 / 0.08)),
+      color-mix(in srgb, var(--color-board) 72%, transparent);
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(170%);
+    backdrop-filter: blur(var(--glass-blur)) saturate(170%);
+    border: 1px solid rgb(244 241 234 / 0.18);
+    box-shadow:
+      inset 0 1px 0 rgb(255 255 255 / 0.22),
+      0 12px 30px rgb(0 0 0 / 0.2);
+  }
+
+  @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+    .glass-floating {
+      background: var(--color-board-solid);
+    }
+  }
+
+  @media (prefers-reduced-transparency: reduce), (prefers-contrast: more) {
+    .glass-floating {
+      background: var(--color-board-solid);
+      -webkit-backdrop-filter: none;
+      backdrop-filter: none;
+    }
+  }
+
+  /*
+   * Extra-glassy version for the open mobile menu (and the navbar while it is open):
+   * more blur and saturation, a brighter rim, a little more see-through.
+   */
+  .glass-menu {
+    background:
+      linear-gradient(rgb(244 241 234 / 0.16), rgb(244 241 234 / 0.05)),
+      color-mix(in srgb, var(--color-board) 58%, transparent);
+    -webkit-backdrop-filter: blur(calc(var(--glass-blur) * 1.75)) saturate(200%);
+    backdrop-filter: blur(calc(var(--glass-blur) * 1.75)) saturate(200%);
+    border: 1px solid rgb(244 241 234 / 0.3);
+    box-shadow:
+      inset 0 1px 0 rgb(255 255 255 / 0.38),
+      inset 0 -1px 0 rgb(255 255 255 / 0.08),
+      0 24px 60px rgb(0 0 0 / 0.35);
+  }
+
+  @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+    .glass-menu {
+      background: var(--color-board-solid);
+    }
+  }
+
+  @media (prefers-reduced-transparency: reduce), (prefers-contrast: more) {
+    .glass-menu {
+      background: var(--color-board-solid);
+      -webkit-backdrop-filter: none;
+      backdrop-filter: none;
+    }
+  }
+
+  /* Blurred light orb behind the glass. Drifts very slowly; position, size and color come from utilities. */
+  .orb {
+    position: absolute;
+    border-radius: 9999px;
+    filter: blur(90px);
+    animation: orb-drift var(--orb-duration, 24s) ease-in-out infinite;
+  }
+
+  /* Chalk writing: each letter outline draws itself (see ChalkText.tsx) */
+  .chalk-letter {
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 0.022em;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-dasharray: 6em;
+    stroke-dashoffset: 6em;
+    animation: chalk-write 0.5s var(--ease-calm) forwards;
+    animation-delay: var(--chalk-delay, 0s);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .orb {
+      animation: none;
+    }
+    .chalk-letter {
+      animation: none;
+      stroke-dashoffset: 0;
+    }
+  }
+
+  /* Material Symbols Rounded: filled, medium weight (SF Symbols feel) */
+  .material-symbols-rounded {
+    font-variation-settings: "FILL" 1, "wght" 500;
+    user-select: none;
+  }
+}
+
+@keyframes orb-drift {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    transform: translate3d(3%, -4%, 0);
+  }
+}
+
+@keyframes chalk-write {
+  to {
+    stroke-dashoffset: 0;
+  }
 }
