@@ -39,8 +39,10 @@
 
   --font-sans: "Inter", system-ui, sans-serif;
   --font-heading: "Stardos Stencil", Georgia, serif;
-  --font-flourish: "Playfair Display", Georgia, serif; /* italic, for the chalk slogan only */
-  --font-brand: "Stardos Stencil", Georgia, serif; /* the logo text, the same in every language */
+  --font-flourish:
+    "Playfair Display", Georgia, serif; /* italic, for the chalk slogan only */
+  --font-brand:
+    "Stardos Stencil", Georgia, serif; /* the logo text, the same in every language */
 
   --text-h1: clamp(2.875rem, 6vw, 5rem); /* 46 → 80px */
   --text-h1--line-height: 1.05;
@@ -107,10 +109,14 @@
   --glass-shadow-dark: 0 24px 60px rgb(0 0 0 / 0.28);
   --glass-shadow-light: 0 20px 50px rgb(31 61 52 / 0.12);
   --glass-light-bg: rgb(255 255 255 / 0.55);
-  --glass-light-bg-strong: rgb(255 255 255 / 0.85); /* form cards: must stay readable on dark glass */
+  --glass-light-bg-strong: rgb(
+    255 255 255 / 0.85
+  ); /* form cards: must stay readable on dark glass */
   --glass-light-border: rgb(255 255 255 / 0.85);
   --glass-light-highlight: rgb(255 255 255 / 0.95);
-  --glass-light-solid: rgb(255 255 255 / 0.9); /* fallback when blur is unavailable */
+  --glass-light-solid: rgb(
+    255 255 255 / 0.9
+  ); /* fallback when blur is unavailable */
 }
 
 /* Phones: lighter blur, no outer shadow (LANDING_SPEC.md "Mobile") */
@@ -296,7 +302,9 @@ html[lang="ar"] {
   }
 
   /* Solid fallbacks: no blur support, or the user asked for less transparency / more contrast */
-  @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  @supports not (
+    (backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))
+  ) {
     .glass-dark {
       background: var(--color-board-solid);
     }
@@ -344,7 +352,9 @@ html[lang="ar"] {
       0 12px 30px rgb(0 0 0 / 0.2);
   }
 
-  @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  @supports not (
+    (backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))
+  ) {
     .glass-floating {
       background: var(--color-board-solid);
     }
@@ -375,7 +385,9 @@ html[lang="ar"] {
       0 24px 60px rgb(0 0 0 / 0.35);
   }
 
-  @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  @supports not (
+    (backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))
+  ) {
     .glass-menu {
       background: var(--color-board-solid);
     }
@@ -422,7 +434,9 @@ html[lang="ar"] {
 
   /* Material Symbols Rounded: filled, medium weight (SF Symbols feel) */
   .material-symbols-rounded {
-    font-variation-settings: "FILL" 1, "wght" 500;
+    font-variation-settings:
+      "FILL" 1,
+      "wght" 500;
     user-select: none;
   }
 }
@@ -440,5 +454,155 @@ html[lang="ar"] {
 @keyframes chalk-write {
   to {
     stroke-dashoffset: 0;
+  }
+}
+
+/*
+ * ---------- Contact form card: one frosted-glass family, black text ----------
+ * Everything inside the card is the same material: the card, the fields and the two payment
+ * choices are white glass (the selected choice is the brightest, with a dark ring), and the
+ * main button is the site's yellow with ink text. Same look in light and dark mode.
+ * The "paper" tokens are redefined for everything inside, so all text and icons turn black.
+ * Not inside a layer on purpose, so these rules win over the utility classes of the parts.
+ * Contrast: black on the darkest spot behind the card (board green) is about 5.5:1 or more.
+ */
+.glass-form {
+  --color-on-paper: #0a0a0a;
+  --color-muted-on-paper: rgb(10 10 10 / 0.75);
+  --color-paper-strong: #0a0a0a;
+  --color-field: rgb(
+    255 255 255 / 0.26
+  ); /* .bg-field: glass fields, visible but light */
+  --text-lg--line-height: calc(
+    3.2 / 1.125
+  ); /* text-lg line height inside the form card */
+  --destructive: oklch(0.45 0.2 27);
+  color: #0a0a0a;
+  background: linear-gradient(
+    135deg,
+    rgb(255 255 255 / 0.6),
+    rgb(255 255 255 / 0.46)
+  );
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(170%);
+  backdrop-filter: blur(var(--glass-blur)) saturate(170%);
+  border: 1px solid rgb(255 255 255 / 0.85);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.95),
+    0 24px 60px rgb(0 0 0 / 0.22);
+}
+
+/* Fields and payment choices: the same glass, one step lighter than the card */
+.glass-form [data-slot="input"],
+.glass-form select,
+.glass-form label:has(input[type="radio"]) {
+  border: 1px solid rgb(255 255 255 / 0.8);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.9),
+    0 1px 2px rgb(0 0 0 / 0.06);
+}
+
+.glass-form ::placeholder {
+  color: rgb(10 10 10 / 0.6);
+}
+
+.glass-form [data-slot="input"][aria-invalid="true"],
+.glass-form select[aria-invalid="true"] {
+  border-color: var(--destructive);
+}
+
+/* The choice that is on: brightest glass and a dark ring, text stays black */
+.glass-form label:has(input[type="radio"]:checked) {
+  background: rgb(255 255 255 / 0.82);
+  border-color: #0a0a0a;
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 1),
+    0 0 0 1px #0a0a0a;
+}
+
+.glass-form label:has(input[type="radio"]:checked) * {
+  color: #0a0a0a;
+}
+
+@supports not (
+  (backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))
+) {
+  .glass-form {
+    background: rgb(255 255 255 / 0.9);
+  }
+}
+
+@media (prefers-reduced-transparency: reduce), (prefers-contrast: more) {
+  .glass-form {
+    background: rgb(255 255 255 / 0.92);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+}
+
+/*
+ * ---------- Select lists (wilaya, plan): glass popup ----------
+ * Chrome and Edge (135+) let us style the open list of a real <select>, so it becomes a frosted
+ * glass panel with black text, like the cards. Firefox and Safari keep their own native list
+ * (phones too, which is what we want for a 58-item list); it only gets the paper colours.
+ * Not inside a layer on purpose, so these rules win over the utility classes.
+ */
+select[data-slot="native-select"] option {
+  background-color: #f4f1ea;
+  color: #0a0a0a;
+}
+
+@supports (appearance: base-select) {
+  select[data-slot="native-select"],
+  select[data-slot="native-select"]::picker(select) {
+    appearance: base-select;
+  }
+
+  select[data-slot="native-select"]::picker-icon {
+    display: none; /* the chevron is drawn by NativeSelect itself */
+  }
+
+  select[data-slot="native-select"]::picker(select) {
+    min-width: anchor-size(width);
+    max-height: min(20rem, 60vh);
+    margin-block: 6px;
+    padding: 6px;
+    border: 1px solid rgb(255 255 255 / 0.7);
+    border-radius: 18px;
+    background: linear-gradient(
+      135deg,
+      rgb(255 255 255 / 0.62),
+      rgb(255 255 255 / 0.46)
+    );
+    -webkit-backdrop-filter: blur(24px) saturate(170%);
+    backdrop-filter: blur(24px) saturate(170%);
+    box-shadow:
+      inset 0 1px 0 rgb(255 255 255 / 0.8),
+      0 20px 50px rgb(0 0 0 / 0.25);
+    color: #0a0a0a;
+    scrollbar-width: thin;
+    scrollbar-color: rgb(10 10 10 / 0.35) transparent;
+  }
+
+  select[data-slot="native-select"] option {
+    padding: 0.625rem 0.875rem;
+    border-radius: 12px;
+    background-color: transparent;
+    color: #0a0a0a;
+    font-size: 1.0625rem;
+    transition: background-color 0.15s;
+  }
+
+  select[data-slot="native-select"] option::checkmark {
+    display: none;
+  }
+
+  select[data-slot="native-select"] option:hover,
+  select[data-slot="native-select"] option:focus-visible {
+    background-color: rgb(255 255 255 / 0.7);
+  }
+
+  select[data-slot="native-select"] option:checked {
+    background-color: rgb(10 10 10 / 0.1);
+    font-weight: 600;
   }
 }
