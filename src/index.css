@@ -105,7 +105,7 @@
   --radius: 0.625rem;
 
   /* glass: one place to tune blur and outer shadow */
-  --glass-blur: 24px;
+  --glass-blur: 30px;
   --glass-shadow-dark: 0 24px 60px rgb(0 0 0 / 0.28);
   --glass-shadow-light: 0 20px 50px rgb(31 61 52 / 0.12);
   --glass-light-bg: rgb(255 255 255 / 0.55);
@@ -458,51 +458,50 @@ html[lang="ar"] {
 }
 
 /*
- * ---------- Contact form card: one frosted-glass family, black text ----------
- * Everything inside the card is the same material: the card, the fields and the two payment
- * choices are white glass (the selected choice is the brightest, with a dark ring), and the
- * main button is the site's yellow with ink text. Same look in light and dark mode.
- * The "paper" tokens are redefined for everything inside, so all text and icons turn black.
+ * ---------- Contact form card: frosted glass, black text ----------
+ * Same look in light and dark mode. The "paper" tokens are redefined for everything inside
+ * the card, so the fields, labels, icons and buttons all turn black on glass.
  * Not inside a layer on purpose, so these rules win over the utility classes of the parts.
- * Contrast: black on the darkest spot behind the card (board green) is about 5.5:1 or more.
  */
 .glass-form {
   --color-on-paper: #0a0a0a;
-  --color-muted-on-paper: rgb(10 10 10 / 0.75);
+  --color-muted-on-paper: rgb(10 10 10 / 0.68);
   --color-paper-strong: #0a0a0a;
-  --color-field: rgb(
-    255 255 255 / 0.26
-  ); /* .bg-field: glass fields, visible but light */
+  --color-paper-action: rgb(
+    255 255 255 / 0.6
+  ); /* button and selected choice: light glass */
+  --color-paper-action-text: #0a0a0a;
+  --color-field: rgb(255 255 255 / 8%); /* .bg-field: very light glass fields */
   --text-lg--line-height: calc(
     3.2 / 1.125
   ); /* text-lg line height inside the form card */
   --destructive: oklch(0.45 0.2 27);
   color: #0a0a0a;
-  background: linear-gradient(
-    135deg,
-    rgb(255 255 255 / 0.6),
-    rgb(255 255 255 / 0.46)
-  );
   -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(170%);
   backdrop-filter: blur(var(--glass-blur)) saturate(170%);
-  border: 1px solid rgb(255 255 255 / 0.85);
+  border: 1px solid rgb(#7fb39e6b);
   box-shadow:
-    inset 0 1px 0 rgb(255 255 255 / 0.95),
+    inset 0 1px 0 rgb(#7fb39e4f),
+    inset 0 -1px 0 rgb(255 255 255 / 0.18),
     0 24px 60px rgb(0 0 0 / 0.22);
 }
 
-/* Fields and payment choices: the same glass, one step lighter than the card */
+html[data-theme="dark"] .glass-form {
+  background: linear-gradient(
+    135deg,
+    rgb(255 255 255 / 0.62),
+    rgb(255 255 255 / 0.46)
+  );
+}
+
+/* Glass fields, plus the two payment choices */
 .glass-form [data-slot="input"],
 .glass-form select,
 .glass-form label:has(input[type="radio"]) {
-  border: 1px solid rgb(255 255 255 / 0.8);
-  box-shadow:
-    inset 0 1px 0 rgb(255 255 255 / 0.9),
-    0 1px 2px rgb(0 0 0 / 0.06);
-}
-
-.glass-form ::placeholder {
-  color: rgb(10 10 10 / 0.6);
+  border-color: rgb(255 255 255 / 0.23);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.55);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(10px);
 }
 
 .glass-form [data-slot="input"][aria-invalid="true"],
@@ -510,24 +509,30 @@ html[lang="ar"] {
   border-color: var(--destructive);
 }
 
-/* The choice that is on: brightest glass and a dark ring, text stays black */
+/* Selected payment choice: brighter glass and a dark outline, so it still stands out */
 .glass-form label:has(input[type="radio"]:checked) {
-  background: rgb(255 255 255 / 0.82);
-  border-color: #0a0a0a;
+  background: rgb(255 255 255 / 0.62);
+  border-color: rgb(10 10 10 / 0.7);
   box-shadow:
-    inset 0 1px 0 rgb(255 255 255 / 1),
-    0 0 0 1px #0a0a0a;
+    inset 0 1px 0 rgb(255 255 255 / 0.8),
+    0 0 0 1px rgb(10 10 10 / 0.7);
 }
 
-.glass-form label:has(input[type="radio"]:checked) * {
-  color: #0a0a0a;
+/* Submit button: glass pill, black text */
+.glass-form button[type="submit"] {
+  border: 1px solid rgb(255 255 255 / 0.8);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.9),
+    0 8px 24px rgb(0 0 0 / 0.16);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
 }
 
 @supports not (
   (backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))
 ) {
   .glass-form {
-    background: rgb(255 255 255 / 0.9);
+    background: rgb(255 255 255 / 0.85);
   }
 }
 

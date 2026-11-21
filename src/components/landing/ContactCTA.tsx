@@ -88,8 +88,8 @@ export function ContactCTA({ plan, onPlanChange }: ContactCTAProps) {
             <p className="text-muted-on-board md:text-[1.1875rem]">{contact.sub}</p>
           </div>
 
-          {/* A paper card, more opaque than usual: it sits on dark glass and must stay readable. */}
-          <div className="on-chalk glass-light glass-light-strong rounded-card p-6 text-on-paper md:p-7">
+          {/* A frosted-glass card with black text (.glass-form in index.css). */}
+          <div className="on-chalk glass-form rounded-card p-6 text-on-paper md:p-7">
             <AnimatePresence mode="wait" initial={false}>
               {sent ? (
                 <motion.div
